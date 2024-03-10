@@ -19,7 +19,6 @@ from django.urls import path, re_path
 from gameinfocus import views
 
 urlpatterns = [
-
     path('', views.main),
     path('account', views.account),
     path('lol', views.league_of_legends),

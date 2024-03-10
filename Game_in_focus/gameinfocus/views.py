@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .forms import UserForm
 
 
 def main(request):
-    return HttpResponse('hello')
+    if request.method == "POST":
+        return HttpResponse("main.html")
+    else:
+        userform = UserForm()
+        return render(request, "main.html", {"form": userform})
 
 
 def account(request):
