@@ -25,16 +25,6 @@ class UserAPIRegistr(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserAPILol(GenericAPIView):
-    serializer_class = LolSerializer
-
-    def get(self, request, *args, **kwargs):
-        block_id = kwargs.get('block_id')
-        user_inf = LolBlocks.objects.get(pk=block_id)
-        serializer = LolSerializer(user_inf)
-        return Response({'data': serializer.data})
-
-
 
 
 
