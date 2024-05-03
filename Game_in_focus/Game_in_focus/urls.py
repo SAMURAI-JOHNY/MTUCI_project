@@ -17,7 +17,8 @@ Including another URLconf
 from django.conf.urls import static
 from django.contrib import admin
 from django.urls import path, include
-from gameinfocus.views import UserAPIRegistr, UserAPILol
+from gameinfocus.views import UserAPIRegistr, UserView, LoginUserView, EmailVerify
+from lol.views import UserAPILol
 from gameinfocus.models import User
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
@@ -26,9 +27,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView,
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/lol/<int:block_id>', UserAPILol.as_view()),
-    path('api/v1/', UserAPIRegistr.as_view()),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('user/', UserView.as_view()),
+    path('registr/', UserAPIRegistr.as_view()),
+    path('login/', LoginUserView.as_view()),
+    path('mail/', EmailVerify.as_view()),
 ]
 
