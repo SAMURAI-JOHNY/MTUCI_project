@@ -143,12 +143,10 @@ MEDIA_URL = '/media/'
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
-
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

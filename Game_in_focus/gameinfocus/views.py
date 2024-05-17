@@ -40,7 +40,7 @@ class UserView(GenericAPIView):
     def get(self, request):
         print(request.data)
         if self.request.user.is_authenticated:
-            return Response({'request.data': str(get_user(request=request))}, status=status.HTTP_200_OK)
+            return Response({'request.data': 'Сюда ёпт'}, status=status.HTTP_200_OK)
         return Response({'ok': 'ee'})
 
 

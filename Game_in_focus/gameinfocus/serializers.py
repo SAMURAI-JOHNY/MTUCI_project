@@ -5,6 +5,11 @@ from .models import User, UserCode
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import smart_str, smart_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 
 UserModel = get_user_model()
 
@@ -52,3 +57,28 @@ class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCode
         fields = ['user', 'code']
+
+
+class ResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        fields = ['email']
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        if User.objects.filter(email=email).existits():
+            user = User.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            request = self.context.get('request')
+            site_domain = get_current_site(request).domain
+            relative_link = reverse('reset ok', kwargs={'uidb64': uidb64, 'token': token})
+            abslink = f'http://{site_domain}{relative_link}'
+            data = {
+                'emal_body': f'Ссылка для сброса пароля {abslink}',
+                'email_subject': 'Reset your Password',
+                'to_email': user.email
+            }
+
+        return super().validate(attrs)
