@@ -26,7 +26,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('lol/<int:block_id>', UserAPILol.as_view()),
+    path('lol/<str:course_name>/<int:block_id>', UserAPILol.as_view()),
     path('user/', UserView.as_view()),
     path('registr/', UserAPIRegistr.as_view()),
     path('login/', LoginUserView.as_view()),

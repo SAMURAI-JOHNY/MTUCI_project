@@ -8,6 +8,7 @@ from .serializers import LolSerializer, BlocksSerializer
 from .models import UserLol
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from gameinfocus.utils import send_code
 
 
 # Create your views here.
@@ -25,4 +26,5 @@ class UserAPILol(GenericAPIView):
             user_lol.save()
         serializer = BlocksSerializer(lol_inf)
         return Response({'data': serializer.data})
+
 

@@ -9,8 +9,15 @@ class LolSerializer(serializers.ModelSerializer):
         model = UserLol
         fields = '__all__'
 
-    def create(self, validated_data):
-        return UserLol.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        instance.username = validated_data.username
+        instance.email = validated_data.email
+
+
+class UserCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserLol
+        fields = ['course_name']
 
 
 class BlocksSerializer(serializers.ModelSerializer):

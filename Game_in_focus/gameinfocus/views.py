@@ -1,23 +1,14 @@
-from django.core.exceptions import ValidationError
-from rest_framework.decorators import action
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import viewsets
-from django.forms.models import model_to_dict
-from rest_framework import generics
 from rest_framework import status
-from rest_framework_simplejwt.backends import TokenBackend
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
 from .permissions import IsAuthenticated
 from .models import User, UserCode
+from lol.models import UserLol
+from lol.serializers import UserCourseSerializer
 from .serializers import UserSerializer, RegistrUserSerializer, UserLoginSerializer, EmailSerializer
-from django.contrib.auth import get_user, authenticate, login
+from django.contrib.auth import authenticate, login
 from .utils import send_code
+from .procents import lol_procents
 
 
 class UserAPIRegistr(GenericAPIView):
@@ -36,12 +27,25 @@ class UserAPIRegistr(GenericAPIView):
 
 class UserView(GenericAPIView):
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        print(request.data)
-        if self.request.user.is_authenticated:
-            return Response({'request.data': 'Сюда ёпт'}, status=status.HTTP_200_OK)
-        return Response({'ok': 'ee'})
+        user = User.objects.values('username', 'email', 'points')
+        serializer = UserSerializer(user, many=True)
+        user_courses = UserLol.objects.filter(user_id=User.objects.get(pk=request.user.id)).values('course_name').distinct()
+        serializer2 = UserCourseSerializer(user_courses, many=True)
+        progress = lol_procents(request)
+        return Response({'courses': progress,
+                        'user': serializer.data})
+
+    def put(self, request):
+        user = User.objects.get(pk=request.user.id)
+        serializer = UserSerializer(many=True)
+        if request.user.email != request.email:
+            user.is_verified = 0
+            send_code(request.email)
+        return Response(serializer.data)
+
 
 
 class EmailVerify(GenericAPIView):
