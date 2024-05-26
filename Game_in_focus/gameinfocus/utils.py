@@ -22,3 +22,13 @@ def send_code(email):
     UserCode.objects.create(user=user, code=code)
     message = EmailMessage(subject=Subject, body=email_body, from_email=from_email, to=[email])
     message.send(fail_silently=True)
+
+
+def send_mormal_email(data):
+    email = EmailMessage(
+        subject=data['email_subject'],
+        body=data['email_body'],
+        from_email=settings.EMAIL_HOST_USER,
+        to=[data['to_email']]
+    )
+    email.send()

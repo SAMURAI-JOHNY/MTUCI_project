@@ -9,10 +9,6 @@ class LolSerializer(serializers.ModelSerializer):
         model = UserLol
         fields = '__all__'
 
-    def update(self, instance, validated_data):
-        instance.username = validated_data.username
-        instance.email = validated_data.email
-
 
 class UserCourseSerializer(serializers.ModelSerializer):
     class Meta:

@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf.urls import static
 from django.contrib import admin
 from django.urls import path, include
-from gameinfocus.views import UserAPIRegistr, UserView, LoginUserView, EmailVerify
+from gameinfocus.views import UserAPIRegistr, UserView, LoginUserView, EmailVerify, LogoutUser
 from lol.views import UserAPILol
 from gameinfocus.models import User
 from rest_framework import routers
@@ -30,6 +30,7 @@ urlpatterns = [
     path('user/', UserView.as_view()),
     path('registr/', UserAPIRegistr.as_view()),
     path('login/', LoginUserView.as_view()),
+    path('logout/', LogoutUser.as_view()),
     path('mail/', EmailVerify.as_view()),
 ]
 

@@ -11,8 +11,9 @@ from rest_framework import status
 from gameinfocus.utils import send_code
 
 
-# Create your views here.
 class UserAPILol(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         block_id = kwargs.get('block_id')
         user = User.objects.get(pk=request.user.id)
@@ -25,6 +26,6 @@ class UserAPILol(GenericAPIView):
             user.save()
             user_lol.save()
         serializer = BlocksSerializer(lol_inf)
-        return Response({'data': serializer.data})
+        return Response(serializer.data)
 
 
