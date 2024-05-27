@@ -4,11 +4,10 @@ from rest_framework.response import Response
 
 from gameinfocus.models import User
 from .models import LolBlocks
-from .serializers import LolSerializer, BlocksSerializer
+from .serializers import BlocksSerializer
 from .models import UserLol
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from gameinfocus.utils import send_code
 
 
 class UserAPILol(GenericAPIView):

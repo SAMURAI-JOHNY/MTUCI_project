@@ -16,16 +16,15 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 
 class UserAPIRegistr(GenericAPIView):
-    serializer_class = RegistrUserSerializer
-
     def post(self, request):
         user_data = request.data
-        serializer = self.serializer_class(data=user_data)
+        serializer = RegistrUserSerializer(data=user_data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             user = serializer.data
             send_code(user['email'])
             return Response({'data': user})
+        print(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -40,7 +39,8 @@ class UserView(GenericAPIView):
         serializer2 = UserCourseSerializer(user_courses, many=True)
         progress = lol_procents(request)
         return Response({'courses': progress,
-                        'user': serializer.data}, status=status.HTTP_200_OK)
+                        'user': serializer.data
+                         }, status=status.HTTP_200_OK)
 
     def patch(self, request):
         user = User.objects.get(pk=request.user.id)
@@ -80,7 +80,6 @@ class LoginUserView(GenericAPIView):
         password = request.data.get('password')
         user = authenticate(request, username=username, password=password)
         token = user.tokens()
-        login(request, user)
         return Response({
                 'username': user.username,
                 'access_token': str(token.get('access')),
