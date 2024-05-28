@@ -21,3 +21,9 @@
 5. Установка зависимостей
 
 ```pip install requirements.txt```
+
+## Запуск
+```python manage.py runserver``
+
+## Документация
+ссыцлка на документацию: 
