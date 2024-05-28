@@ -25,6 +25,7 @@ class UserAPILol(GenericAPIView):
             user.save()
             user_lol.save()
         serializer = BlocksSerializer(lol_inf)
+        print(serializer.data)
         return Response(serializer.data)
 
 
