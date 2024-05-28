@@ -16,7 +16,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -25,9 +24,6 @@ SECRET_KEY = 'django-insecure-vaa6%qq3&8828ir4lpsvxoj=%1t4dq&q2dak=7x_*8pq!%xusv
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,17 +39,30 @@ INSTALLED_APPS = [
     'lol.apps.LolConfig',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
+    'drf_yasg',
+    'rest_framework_simplejwt.token_blacklist'
 ]
+
+ALLOWED_HOSTS = []
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
+
+APPEND_SLASH = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'Game_in_focus.urls'
 
@@ -143,7 +152,7 @@ MEDIA_URL = '/media/'
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=500),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }

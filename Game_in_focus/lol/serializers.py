@@ -9,8 +9,11 @@ class LolSerializer(serializers.ModelSerializer):
         model = UserLol
         fields = '__all__'
 
-    def create(self, validated_data):
-        return UserLol.objects.create(**validated_data)
+
+class UserCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserLol
+        fields = ['course_name']
 
 
 class BlocksSerializer(serializers.ModelSerializer):

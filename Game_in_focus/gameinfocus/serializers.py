@@ -1,10 +1,8 @@
 from rest_framework import serializers
-from django.core.exceptions import ValidationError
-from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import TokenError
 from .models import User, UserCode
 from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import smart_str, smart_bytes
@@ -17,7 +15,14 @@ UserModel = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'email', 'points']
+        read_only_fields = ['points']
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -65,8 +70,8 @@ class ResetSerializer(serializers.Serializer):
     class Meta:
         fields = ['email']
 
-    def validate(self, attrs):
-        email = attrs.get('email')
+    def validate(self, data):
+        email = data.get('email')
         if User.objects.filter(email=email).existits():
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
@@ -81,4 +86,34 @@ class ResetSerializer(serializers.Serializer):
                 'to_email': user.email
             }
 
-        return super().validate(attrs)
+        return super().validate(data)
+
+
+class NewPasswordSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=255, write_only=True)
+    confirm_password = serializers.CharField(max_length=255, write_only=True)
+    uidb64 = serializers.CharField(max_length=255, write_only=True)
+    token = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = ['password', 'confirm_password', 'uidb64', 'token']
+
+
+class LogoutSerializer(serializers.ModelSerializer):
+    refresh_token = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['refresh_token']
+
+    def validate(self, data):
+        self.token = data.get('refresh_token')
+        return data
+
+    def save(self, **kwargs):
+        try:
+            token = RefreshToken(self.token)
+            token.blacklist()
+        except TokenError:
+            return self.fail('bad token')
+
